@@ -1,0 +1,67 @@
+erDiagram
+    SUPPLIER ||--o{ PURCHASE_ORDER : receives
+    SUPPLIER o|--o{ PRODUCT : preferred_source
+    PRODUCT ||--|| INVENTORY : has_balance
+    PURCHASE_ORDER ||--|{ ORDER_ITEM : contains
+    PRODUCT ||--o{ ORDER_ITEM : ordered_as
+    PURCHASE_ORDER ||--o| DELIVERY : has_delivery_record
+    PRODUCT ||--o{ INVENTORY_TRANSACTION : movement_history
+    SUPPLIER ||--o{ SUPPLIER_EVALUATION : evaluated_in
+
+    SUPPLIER {
+        int supplier_id PK
+        varchar supplier_name
+        varchar phone UK
+        varchar email UK
+        int standard_lead_days
+        enum supplier_status
+    }
+    PRODUCT {
+        int product_id PK
+        varchar sku UK
+        varchar product_name
+        varchar category
+        decimal unit_price
+        int reorder_level
+        int preferred_supplier_id FK
+    }
+    INVENTORY {
+        int product_id PK,FK
+        int current_stock
+        timestamp last_updated
+    }
+    PURCHASE_ORDER {
+        int order_id PK
+        varchar order_number UK
+        int supplier_id FK
+        date order_date
+        date expected_date
+        enum order_status
+    }
+    ORDER_ITEM {
+        int order_id PK,FK
+        int product_id PK,FK
+        int quantity
+        decimal unit_price
+        int received_quantity
+    }
+    DELIVERY {
+        int delivery_id PK
+        int order_id FK,UK
+        date delivered_date
+        enum delivery_status
+    }
+    INVENTORY_TRANSACTION {
+        bigint transaction_id PK
+        int product_id FK
+        enum transaction_type
+        int quantity
+        timestamp transaction_date
+    }
+    SUPPLIER_EVALUATION {
+        int evaluation_id PK
+        int supplier_id FK
+        date evaluation_date
+        decimal on_time_percentage
+        decimal performance_score
+    }
